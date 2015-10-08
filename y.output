@@ -1,0 +1,361 @@
+Terminals unused in grammar
+
+   NOTOKEN
+
+
+Grammar
+
+    0 $accept: goal $end
+
+    1 goal: commands
+
+    2 commands: command
+    3         | commands command
+
+    4 command: commands_pipe iomodifier_list background_opt NEWLINE
+    5        | NEWLINE
+    6        | error NEWLINE
+
+    7 commands_pipe: commands_pipe PIPE command_and_args
+    8              | command_and_args
+
+    9 command_and_args: command_word arg_list
+
+   10 arg_list: arg_list argument
+   11         | /* empty */
+
+   12 argument: WORD
+
+   13 command_word: WORD
+
+   14 iomodifier_list: iomodifier_list iomodifier_opt
+   15                | /* empty */
+
+   16 iomodifier_opt: GREAT WORD
+   17               | APPEND WORD
+   18               | RD WORD
+   19               | RA WORD
+   20               | LESS WORD
+
+   21 background_opt: AMPERSAND
+   22               | /* empty */
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256) 6
+WORD (258) 12 13 16 17 18 19 20
+NOTOKEN (259)
+GREAT (260) 16
+NEWLINE (261) 4 5 6
+LESS (262) 20
+APPEND (263) 17
+PIPE (264) 7
+AMPERSAND (265) 21
+RD (266) 18
+RA (267) 19
+
+
+Nonterminals, with rules where they appear
+
+$accept (13)
+    on left: 0
+goal (14)
+    on left: 1, on right: 0
+commands (15)
+    on left: 2 3, on right: 1 3
+command (16)
+    on left: 4 5 6, on right: 2 3
+commands_pipe (17)
+    on left: 7 8, on right: 4 7
+command_and_args (18)
+    on left: 9, on right: 7 8
+arg_list (19)
+    on left: 10 11, on right: 9 10
+argument (20)
+    on left: 12, on right: 10
+command_word (21)
+    on left: 13, on right: 9
+iomodifier_list (22)
+    on left: 14 15, on right: 4 14
+iomodifier_opt (23)
+    on left: 16 17 18 19 20, on right: 14
+background_opt (24)
+    on left: 21 22, on right: 4
+
+
+state 0
+
+    0 $accept: . goal $end
+
+    error    shift, and go to state 1
+    WORD     shift, and go to state 2
+    NEWLINE  shift, and go to state 3
+
+    goal              go to state 4
+    commands          go to state 5
+    command           go to state 6
+    commands_pipe     go to state 7
+    command_and_args  go to state 8
+    command_word      go to state 9
+
+
+state 1
+
+    6 command: error . NEWLINE
+
+    NEWLINE  shift, and go to state 10
+
+
+state 2
+
+   13 command_word: WORD .
+
+    $default  reduce using rule 13 (command_word)
+
+
+state 3
+
+    5 command: NEWLINE .
+
+    $default  reduce using rule 5 (command)
+
+
+state 4
+
+    0 $accept: goal . $end
+
+    $end  shift, and go to state 11
+
+
+state 5
+
+    1 goal: commands .
+    3 commands: commands . command
+
+    error    shift, and go to state 1
+    WORD     shift, and go to state 2
+    NEWLINE  shift, and go to state 3
+
+    $end  reduce using rule 1 (goal)
+
+    command           go to state 12
+    commands_pipe     go to state 7
+    command_and_args  go to state 8
+    command_word      go to state 9
+
+
+state 6
+
+    2 commands: command .
+
+    $default  reduce using rule 2 (commands)
+
+
+state 7
+
+    4 command: commands_pipe . iomodifier_list background_opt NEWLINE
+    7 commands_pipe: commands_pipe . PIPE command_and_args
+
+    PIPE  shift, and go to state 13
+
+    $default  reduce using rule 15 (iomodifier_list)
+
+    iomodifier_list  go to state 14
+
+
+state 8
+
+    8 commands_pipe: command_and_args .
+
+    $default  reduce using rule 8 (commands_pipe)
+
+
+state 9
+
+    9 command_and_args: command_word . arg_list
+
+    $default  reduce using rule 11 (arg_list)
+
+    arg_list  go to state 15
+
+
+state 10
+
+    6 command: error NEWLINE .
+
+    $default  reduce using rule 6 (command)
+
+
+state 11
+
+    0 $accept: goal $end .
+
+    $default  accept
+
+
+state 12
+
+    3 commands: commands command .
+
+    $default  reduce using rule 3 (commands)
+
+
+state 13
+
+    7 commands_pipe: commands_pipe PIPE . command_and_args
+
+    WORD  shift, and go to state 2
+
+    command_and_args  go to state 16
+    command_word      go to state 9
+
+
+state 14
+
+    4 command: commands_pipe iomodifier_list . background_opt NEWLINE
+   14 iomodifier_list: iomodifier_list . iomodifier_opt
+
+    GREAT      shift, and go to state 17
+    LESS       shift, and go to state 18
+    APPEND     shift, and go to state 19
+    AMPERSAND  shift, and go to state 20
+    RD         shift, and go to state 21
+    RA         shift, and go to state 22
+
+    $default  reduce using rule 22 (background_opt)
+
+    iomodifier_opt  go to state 23
+    background_opt  go to state 24
+
+
+state 15
+
+    9 command_and_args: command_word arg_list .
+   10 arg_list: arg_list . argument
+
+    WORD  shift, and go to state 25
+
+    $default  reduce using rule 9 (command_and_args)
+
+    argument  go to state 26
+
+
+state 16
+
+    7 commands_pipe: commands_pipe PIPE command_and_args .
+
+    $default  reduce using rule 7 (commands_pipe)
+
+
+state 17
+
+   16 iomodifier_opt: GREAT . WORD
+
+    WORD  shift, and go to state 27
+
+
+state 18
+
+   20 iomodifier_opt: LESS . WORD
+
+    WORD  shift, and go to state 28
+
+
+state 19
+
+   17 iomodifier_opt: APPEND . WORD
+
+    WORD  shift, and go to state 29
+
+
+state 20
+
+   21 background_opt: AMPERSAND .
+
+    $default  reduce using rule 21 (background_opt)
+
+
+state 21
+
+   18 iomodifier_opt: RD . WORD
+
+    WORD  shift, and go to state 30
+
+
+state 22
+
+   19 iomodifier_opt: RA . WORD
+
+    WORD  shift, and go to state 31
+
+
+state 23
+
+   14 iomodifier_list: iomodifier_list iomodifier_opt .
+
+    $default  reduce using rule 14 (iomodifier_list)
+
+
+state 24
+
+    4 command: commands_pipe iomodifier_list background_opt . NEWLINE
+
+    NEWLINE  shift, and go to state 32
+
+
+state 25
+
+   12 argument: WORD .
+
+    $default  reduce using rule 12 (argument)
+
+
+state 26
+
+   10 arg_list: arg_list argument .
+
+    $default  reduce using rule 10 (arg_list)
+
+
+state 27
+
+   16 iomodifier_opt: GREAT WORD .
+
+    $default  reduce using rule 16 (iomodifier_opt)
+
+
+state 28
+
+   20 iomodifier_opt: LESS WORD .
+
+    $default  reduce using rule 20 (iomodifier_opt)
+
+
+state 29
+
+   17 iomodifier_opt: APPEND WORD .
+
+    $default  reduce using rule 17 (iomodifier_opt)
+
+
+state 30
+
+   18 iomodifier_opt: RD WORD .
+
+    $default  reduce using rule 18 (iomodifier_opt)
+
+
+state 31
+
+   19 iomodifier_opt: RA WORD .
+
+    $default  reduce using rule 19 (iomodifier_opt)
+
+
+state 32
+
+    4 command: commands_pipe iomodifier_list background_opt NEWLINE .
+
+    $default  reduce using rule 4 (command)
