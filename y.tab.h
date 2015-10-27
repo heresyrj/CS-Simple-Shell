@@ -38,29 +38,31 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     WORD = 258,
-     NOTOKEN = 259,
-     GREAT = 260,
-     NEWLINE = 261,
-     LESS = 262,
-     APPEND = 263,
-     PIPE = 264,
-     AMPERSAND = 265,
-     RD = 266,
-     RA = 267
+     EXIT = 258,
+     WORD = 259,
+     NOTOKEN = 260,
+     GREAT = 261,
+     NEWLINE = 262,
+     LESS = 263,
+     APPEND = 264,
+     PIPE = 265,
+     AMPERSAND = 266,
+     RD = 267,
+     RA = 268
    };
 #endif
 /* Tokens.  */
-#define WORD 258
-#define NOTOKEN 259
-#define GREAT 260
-#define NEWLINE 261
-#define LESS 262
-#define APPEND 263
-#define PIPE 264
-#define AMPERSAND 265
-#define RD 266
-#define RA 267
+#define EXIT 258
+#define WORD 259
+#define NOTOKEN 260
+#define GREAT 261
+#define NEWLINE 262
+#define LESS 263
+#define APPEND 264
+#define PIPE 265
+#define AMPERSAND 266
+#define RD 267
+#define RA 268
 
 
 
@@ -70,12 +72,14 @@ typedef union YYSTYPE
 {
 
 /* Line 1685 of yacc.c  */
-#line 6 "shell.y"
- char   *string_val; 
+#line 5 "shell.y"
+
+  char *string_val;
+
 
 
 /* Line 1685 of yacc.c  */
-#line 79 "y.tab.h"
+#line 83 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

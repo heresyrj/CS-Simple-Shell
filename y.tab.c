@@ -72,7 +72,7 @@
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+# define YYDEBUG 0
 #endif
 
 /* Enabling verbose error messages.  */
@@ -95,29 +95,31 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     WORD = 258,
-     NOTOKEN = 259,
-     GREAT = 260,
-     NEWLINE = 261,
-     LESS = 262,
-     APPEND = 263,
-     PIPE = 264,
-     AMPERSAND = 265,
-     RD = 266,
-     RA = 267
+     EXIT = 258,
+     WORD = 259,
+     NOTOKEN = 260,
+     GREAT = 261,
+     NEWLINE = 262,
+     LESS = 263,
+     APPEND = 264,
+     PIPE = 265,
+     AMPERSAND = 266,
+     RD = 267,
+     RA = 268
    };
 #endif
 /* Tokens.  */
-#define WORD 258
-#define NOTOKEN 259
-#define GREAT 260
-#define NEWLINE 261
-#define LESS 262
-#define APPEND 263
-#define PIPE 264
-#define AMPERSAND 265
-#define RD 266
-#define RA 267
+#define EXIT 258
+#define WORD 259
+#define NOTOKEN 260
+#define GREAT 261
+#define NEWLINE 262
+#define LESS 263
+#define APPEND 264
+#define PIPE 265
+#define AMPERSAND 266
+#define RD 267
+#define RA 268
 
 
 
@@ -127,12 +129,14 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 6 "shell.y"
- char   *string_val; 
+#line 5 "shell.y"
+
+  char *string_val;
+
 
 
 /* Line 214 of yacc.c  */
-#line 136 "y.tab.c"
+#line 140 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -148,13 +152,23 @@ typedef union YYSTYPE
 //#define yylex yylex
 #include <stdio.h>
 #include <string.h>
+#include <string.h>
+#include <stdlib.h>
+#include <regex.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <unistd.h>
+#include <signal.h>
 #include "command.h"
-void yyerror(const char * s);
+void yyerror(const char *s);
 int yylex();
+void expandWildCardIfNecessary(char *arg);
+void expandWildCard(char *prefix, char *suffix);
 
 
 /* Line 264 of yacc.c  */
-#line 158 "y.tab.c"
+#line 172 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -369,10 +383,10 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  11
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   27
+#define YYLAST   26
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  13
+#define YYNTOKENS  14
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  12
 /* YYNRULES -- Number of rules.  */
@@ -382,7 +396,7 @@ union yyalloc
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   267
+#define YYMAXUTOK   268
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -416,7 +430,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12
+       5,     6,     7,     8,     9,    10,    11,    12,    13
 };
 
 #if YYDEBUG
@@ -432,20 +446,20 @@ static const yytype_uint8 yyprhs[] =
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      14,     0,    -1,    15,    -1,    16,    -1,    15,    16,    -1,
-      17,    22,    24,     6,    -1,     6,    -1,     1,     6,    -1,
-      17,     9,    18,    -1,    18,    -1,    21,    19,    -1,    19,
-      20,    -1,    -1,     3,    -1,     3,    -1,    22,    23,    -1,
-      -1,     5,     3,    -1,     8,     3,    -1,    11,     3,    -1,
-      12,     3,    -1,     7,     3,    -1,    10,    -1,    -1
+      15,     0,    -1,    16,    -1,    17,    -1,    16,    17,    -1,
+      18,    23,    25,     7,    -1,     7,    -1,     1,     7,    -1,
+      18,    10,    19,    -1,    19,    -1,    22,    20,    -1,    20,
+      21,    -1,    -1,     4,    -1,     4,    -1,    23,    24,    -1,
+      -1,     6,     4,    -1,     9,     4,    -1,    12,     4,    -1,
+      13,     4,    -1,     8,     4,    -1,    11,    -1,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    22,    22,    26,    27,    31,    36,    37,    41,    42,
-      46,    54,    55,    59,    67,    75,    76,    80,    87,    96,
-     106,   117,   126,   131
+       0,    32,    32,    34,    34,    36,    40,    41,    43,    43,
+      45,    49,    49,    52,    54,    60,    60,    63,    68,    75,
+      83,    92,    98,   102
 };
 #endif
 
@@ -454,11 +468,11 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "WORD", "NOTOKEN", "GREAT", "NEWLINE",
-  "LESS", "APPEND", "PIPE", "AMPERSAND", "RD", "RA", "$accept", "goal",
-  "commands", "command", "commands_pipe", "command_and_args", "arg_list",
-  "argument", "command_word", "iomodifier_list", "iomodifier_opt",
-  "background_opt", 0
+  "$end", "error", "$undefined", "EXIT", "WORD", "NOTOKEN", "GREAT",
+  "NEWLINE", "LESS", "APPEND", "PIPE", "AMPERSAND", "RD", "RA", "$accept",
+  "goal", "commands", "command", "commands_pipe", "command_and_args",
+  "arg_list", "argument", "command_word", "iomodifier_list",
+  "iomodifier_opt", "background_opt", 0
 };
 #endif
 
@@ -468,16 +482,16 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267
+     265,   266,   267,   268
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    13,    14,    15,    15,    16,    16,    16,    17,    17,
-      18,    19,    19,    20,    21,    22,    22,    23,    23,    23,
-      23,    23,    24,    24
+       0,    14,    15,    16,    16,    17,    17,    17,    18,    18,
+      19,    20,    20,    21,    22,    23,    23,    24,    24,    24,
+      24,    24,    25,    25
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -508,20 +522,20 @@ static const yytype_int8 yydefgoto[] =
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -6
+#define YYPACT_NINF -7
 static const yytype_int8 yypact[] =
 {
-       9,    -2,    -6,    -6,     1,     8,    -6,     4,    -6,    -6,
-      -6,    -6,    -6,    13,    -5,    14,    -6,    15,    16,    17,
-      -6,    18,    19,    -6,    20,    -6,    -6,    -6,    -6,    -6,
-      -6,    -6,    -6
+       9,    -3,    -7,    -7,     1,     8,    -7,     4,    -7,    -7,
+      -7,    -7,    -7,     7,    -6,    13,    -7,    14,    15,    16,
+      -7,    17,    18,    -7,    19,    -7,    -7,    -7,    -7,    -7,
+      -7,    -7,    -7
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -6,    -6,    -6,    22,    -6,    10,    -6,    -6,    -6,    -6,
-      -6,    -6
+      -7,    -7,    -7,    20,    -7,    10,    -7,    -7,    -7,    -7,
+      -7,    -7
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -532,25 +546,25 @@ static const yytype_int8 yypgoto[] =
 static const yytype_int8 yytable[] =
 {
       17,    11,    18,    19,    10,    20,    21,    22,    -2,     1,
-       1,     2,     2,    13,     3,     3,     2,    25,    27,    28,
-      29,    30,    31,    16,     0,     0,    32,    12
+       1,     2,     2,     2,    13,     3,     3,    25,    27,    28,
+      29,    30,    31,    16,     0,    12,    32
 };
 
 static const yytype_int8 yycheck[] =
 {
-       5,     0,     7,     8,     6,    10,    11,    12,     0,     1,
-       1,     3,     3,     9,     6,     6,     3,     3,     3,     3,
-       3,     3,     3,    13,    -1,    -1,     6,     5
+       6,     0,     8,     9,     7,    11,    12,    13,     0,     1,
+       1,     4,     4,     4,    10,     7,     7,     4,     4,     4,
+       4,     4,     4,    13,    -1,     5,     7
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     1,     3,     6,    14,    15,    16,    17,    18,    21,
-       6,     0,    16,     9,    22,    19,    18,     5,     7,     8,
-      10,    11,    12,    23,    24,     3,    20,     3,     3,     3,
-       3,     3,     6
+       0,     1,     4,     7,    15,    16,    17,    18,    19,    22,
+       7,     0,    17,    10,    23,    20,    19,     6,     8,     9,
+      11,    12,    13,    24,    25,     4,    21,     4,     4,     4,
+       4,     4,     7
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1373,136 +1387,132 @@ yyreduce:
         case 5:
 
 /* Line 1464 of yacc.c  */
-#line 32 "shell.y"
+#line 36 "shell.y"
     {
-          	//printf("   Yacc: Execute command\n");
-            	Command::_currentCommand.execute();
-        }
+  // printf("   Yacc: Execute command\n");
+  Command::_currentCommand.execute();
+}
     break;
 
   case 6:
 
 /* Line 1464 of yacc.c  */
-#line 36 "shell.y"
+#line 40 "shell.y"
     { Command::_currentCommand.prompt(); }
     break;
 
   case 7:
 
 /* Line 1464 of yacc.c  */
-#line 37 "shell.y"
+#line 41 "shell.y"
     { yyerrok; }
     break;
 
   case 10:
 
 /* Line 1464 of yacc.c  */
-#line 47 "shell.y"
+#line 45 "shell.y"
     {
-            Command::_currentCommand.
-            insertSimpleCommand( Command::_currentSimpleCommand );
-        }
+  Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
+}
     break;
 
   case 13:
 
 /* Line 1464 of yacc.c  */
-#line 60 "shell.y"
-    {
-        	//printf("   Yacc: insert argument \"%s\"\n", $1);
-            Command::_currentSimpleCommand->insertArgument((yyvsp[(1) - (1)].string_val));
-        }
+#line 52 "shell.y"
+    { expandWildCardIfNecessary((yyvsp[(1) - (1)].string_val)); }
     break;
 
   case 14:
 
 /* Line 1464 of yacc.c  */
-#line 67 "shell.y"
+#line 54 "shell.y"
     {
-          	//printf("   Yacc: insert command \"%s\"\n", $1);
-            Command::_currentSimpleCommand = new SimpleCommand();
-            Command::_currentSimpleCommand->insertArgument((yyvsp[(1) - (1)].string_val));
-        }
+  // printf("   Yacc: insert command \"%s\"\n", $1);
+  Command::_currentSimpleCommand = new SimpleCommand();
+  Command::_currentSimpleCommand->insertArgument((yyvsp[(1) - (1)].string_val));
+}
     break;
 
   case 17:
 
 /* Line 1464 of yacc.c  */
-#line 81 "shell.y"
+#line 63 "shell.y"
     {
-		//printf("   Yacc: insert output \"%s\"\n", $2);
-           	Command::_currentCommand._outFile = strdup((yyvsp[(2) - (2)].string_val));
-		    Command::_currentCommand._numOfOutFile++;
-        }
+  // printf("   Yacc: insert output \"%s\"\n", $2);
+  Command::_currentCommand._outFile = strdup((yyvsp[(2) - (2)].string_val));
+  Command::_currentCommand._numOfOutFile++;
+}
     break;
 
   case 18:
 
 /* Line 1464 of yacc.c  */
-#line 88 "shell.y"
+#line 68 "shell.y"
     {
-          	/*" >>  "*/
-          	//printf("   Yacc: append output \"%s\"\n", $2);
-           	Command::_currentCommand._outFile = strdup((yyvsp[(2) - (2)].string_val));
-		    Command::_currentCommand._append = 1;
-		    Command::_currentCommand._numOfOutFile++;
-        }
+  /*" >>  "*/
+  // printf("   Yacc: append output \"%s\"\n", $2);
+  Command::_currentCommand._outFile = strdup((yyvsp[(2) - (2)].string_val));
+  Command::_currentCommand._append = 1;
+  Command::_currentCommand._numOfOutFile++;
+}
     break;
 
   case 19:
 
 /* Line 1464 of yacc.c  */
-#line 97 "shell.y"
+#line 75 "shell.y"
     {
-          	/*" >& "*/
-          	//printf("   Yacc: append stdout & stderr to \"%s\"\n", $2);
-            Command::_currentCommand._outFile = strdup((yyvsp[(2) - (2)].string_val));
-            Command::_currentCommand._errFile = strdup((yyvsp[(2) - (2)].string_val));
-		    Command::_currentCommand._numOfOutFile++;
-	    	Command::_currentCommand._numOfErrFile++;
-        }
+  /*" >& "*/
+  // printf("   Yacc: append stdout & stderr to \"%s\"\n", $2);
+  Command::_currentCommand._outFile = strdup((yyvsp[(2) - (2)].string_val));
+  Command::_currentCommand._errFile = strdup((yyvsp[(2) - (2)].string_val));
+  Command::_currentCommand._numOfOutFile++;
+  Command::_currentCommand._numOfErrFile++;
+}
     break;
 
   case 20:
 
 /* Line 1464 of yacc.c  */
-#line 107 "shell.y"
+#line 83 "shell.y"
     {
-          	/*" >>& "*/
-          	//printf("   Yacc: append stdout & stderr to \"%s\"\n", $2);
-            Command::_currentCommand._outFile = strdup((yyvsp[(2) - (2)].string_val));
-           	Command::_currentCommand._errFile = strdup((yyvsp[(2) - (2)].string_val));
-	    	Command::_currentCommand._append = 1;
-	    	Command::_currentCommand._numOfOutFile++;
-	    	Command::_currentCommand._numOfErrFile++;
-        }
+  /*" >>& "*/
+  // printf("   Yacc: append stdout & stderr to \"%s\"\n", $2);
+  Command::_currentCommand._outFile = strdup((yyvsp[(2) - (2)].string_val));
+  Command::_currentCommand._errFile = strdup((yyvsp[(2) - (2)].string_val));
+  Command::_currentCommand._append = 1;
+  Command::_currentCommand._numOfOutFile++;
+  Command::_currentCommand._numOfErrFile++;
+}
     break;
 
   case 21:
 
 /* Line 1464 of yacc.c  */
-#line 118 "shell.y"
+#line 92 "shell.y"
     {
-          	//printf("   Yacc: insert input \"%s\"\n", $2);
-		    Command::_currentCommand._inputFile = strdup((yyvsp[(2) - (2)].string_val));
-	    	Command::_currentCommand._numOfInFile++;
-        }
+  // printf("   Yacc: insert input \"%s\"\n", $2);
+  Command::_currentCommand._inputFile = strdup((yyvsp[(2) - (2)].string_val));
+  Command::_currentCommand._numOfInFile++;
+}
     break;
 
   case 22:
 
 /* Line 1464 of yacc.c  */
-#line 127 "shell.y"
+#line 98 "shell.y"
     {
-          	//printf("   Yacc: run in background YES\n");
-           	Command::_currentCommand._background = 1;
-        }
+  // printf("   Yacc: run in background YES\n");
+  Command::_currentCommand._background = 1;
+}
     break;
 
 
 
 /* Line 1464 of yacc.c  */
-#line 1506 "y.tab.c"
+#line 1516 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1714,20 +1724,200 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 134 "shell.y"
+#line 105 "shell.y"
 
 
 /**************************PART 3*****************************/
-void
-yyerror(const char * s)
-{
-	fprintf(stderr,"%s", s);
+char **array;
+int nEntries = 0;
+int maxEntries = 20;
+
+void expandWildCardIfNecessary(char *arg) {
+  if (strchr(arg, '*') == NULL && strchr(arg, '?') == NULL) {
+    Command::_currentSimpleCommand->insertArgument(arg);
+  } else {
+    expandWildCard(NULL, arg);
+  }
 }
+
+void expandWildCard(char *prefix, char *suffix)
+
+{
+  if (suffix[0] == 0) {
+    if (nEntries == 0) {
+      array = (char **)malloc(sizeof(char *) * maxEntries);
+    }
+
+    if (nEntries == maxEntries) {
+      maxEntries *= 2;
+      array = (char **)realloc(array, sizeof(char *) * maxEntries);
+    }
+
+    array[nEntries] = strdup(prefix);
+
+    nEntries++;
+
+    return;
+  }
+
+  char *s = strchr(suffix, '/');
+  char component[1024] = "";
+
+  if (s != NULL) {
+    int length = s - suffix;
+
+    if (length == 0)
+      strcpy(component, "/");
+
+    else
+      strncpy(component, suffix, length);
+
+    suffix = s + 1;
+  }
+
+  else {
+    strcpy(component, suffix);
+
+    suffix = suffix + strlen(suffix);
+  }
+
+  char newPrefix[1024] = "";
+
+  if (strchr(component, '*') == NULL && strchr(component, '?') == NULL) {
+    if (prefix == NULL) 
+      sprintf(newPrefix, "%s", component);
+    else if (!strcmp(prefix, "/"))
+      sprintf(newPrefix, "%s%s", prefix, component);
+    else 
+      sprintf(newPrefix, "%s/%s", prefix, component);
+
+    expandWildCard(newPrefix, suffix);
+    return;
+  }
+
+  else {
+    int first = 0;
+    int isHidden = 0;
+
+    char * reg = (char*)malloc(2*strlen(component)+10); 
+    char * a = component;
+    char * r = reg;
+    *r = '^'; r++;
+
+    while (*a) {
+      if (*a == '*') { *r = '.'; r++; *r = '*';}
+
+      else if (*a == '.') {
+        *r = '\\';
+        r++;
+        *r = '.';
+        if (first == 0) isHidden = 1;
+      }
+
+      else if (*a == '?')
+        *r = '.';
+      else
+        *r = *a;
+      a++;
+      r++;
+      first++;
+    }
+    *r = '$'; r++; *r = 0;
+
+    regex_t t;
+
+    int result = regcomp(&t, reg, REG_NOSUB);
+
+    if (result != 0) {
+      perror("compile");
+      return;
+    }
+
+    else {
+      char * dr;
+
+      if (prefix == NULL)
+        dr = ".";
+      else
+        dr = prefix;
+
+      DIR *dir = opendir(dr);
+
+      if (dir == NULL) {
+        return;
+      }
+
+      struct dirent *ent;
+
+      while ((ent = readdir(dir)) != NULL) {
+        regmatch_t m;
+
+        result = regexec(&t, ent->d_name, 1, &m, 0);
+
+        if (result == 0) {
+          if (ent->d_name[0] == '.') {
+            if (isHidden) {
+              if (prefix == NULL)
+                sprintf(newPrefix, "%s", ent->d_name);
+              else if (!strcmp(prefix, "/"))
+                sprintf(newPrefix, "%s%s", prefix, ent->d_name);
+              else
+                sprintf(newPrefix, "%s/%s", prefix, ent->d_name);
+
+              expandWildCard(newPrefix, suffix);
+            }
+
+          }
+          else {
+            if (prefix == NULL)
+              sprintf(newPrefix, "%s", ent->d_name);
+            else if (!strcmp(prefix, "/"))
+              sprintf(newPrefix, "%s%s", prefix, ent->d_name);
+            else
+              sprintf(newPrefix, "%s/%s", prefix, ent->d_name);
+
+            expandWildCard(newPrefix, suffix);
+          }
+        }
+      }
+    }
+
+    free(reg);
+  }
+
+  if (suffix[0] == 0) {
+    char *temp;
+    int iter = nEntries;
+    int done;
+    int i;
+
+    do {
+      done = 1;
+      for (i = 0; i < iter - 1; i++) {
+        if (strcmp(array[i], array[i + 1]) > 0) {
+          temp = array[i];
+          array[i] = array[i + 1];
+          array[i + 1] = temp;
+          done = 0;
+        }
+      }
+      iter--;
+    } while (!done);
+
+    for (i = 0; i < nEntries; i++)
+      Command::_currentSimpleCommand->insertArgument(array[i]);
+
+    free(array);
+    nEntries = 0;
+    maxEntries = 20;
+  }
+}
+
+void yyerror(const char *s) { fprintf(stderr, "%s", s); }
 
 #if 0
 main()
-	{
-		yyparse();
-	}
+    {
+        yyparse();
+    }
 #endif
-

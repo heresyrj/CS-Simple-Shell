@@ -1,0 +1,20 @@
+1. Features specified in the handout that work
+- IO Redirection
+- Pipes
+- Background and Zombie
+- Environment
+- Words and special chars
+- cd
+- Quotes and escape chars
+- CTRL-C
+- tilde expansion
+- Wildcarding
+- Robustness
+- subshell
+
+2.Features specified in the handout that do not work
+- NONE
+
+
+3. Extra features implemented
+- Ctrl-A to the begining of line
